@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List, Optional
 
+from fastapi import HTTPException
+
 
 class ItemStatus(Enum):
     ON_SALE = "ON_SALE"
@@ -93,3 +95,46 @@ def find_by_name(name: str) -> Item:
     filtered_items = [item for item in items if name in item.name]
 
     return filtered_items if filtered_items else None
+
+
+def create(create_item) -> Item:
+    """
+    アイテムを新規登録します。
+
+    Args:
+        create_item (Item): 登録するアイテム
+
+    Returns:
+        Item: 登録したアイテム
+    """
+    new_item = Item(
+        len(items) + 1,
+        create_item.get("name"),
+        create_item.get("price"),
+        create_item.get("description"),
+        ItemStatus.ON_SALE,
+    )
+    items.append(new_item)
+
+    return new_item
+
+
+def update(id: int, update_item) -> Item:
+    """
+    アイテムを更新します。
+
+    Args:
+        id (int): アイテムID
+        update_item (Item): 更新するアイテム
+
+    Returns:
+        Item: 更新したアイテム
+    """
+    item = find_by_id(id)
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    item.name = update_item.get("name", item.name)
+    item.price = update_item.get("price", item.price)
+    item.description = update_item.get("description", item.description)
+    item.status = update_item.get("status", item.status)
+    return item
