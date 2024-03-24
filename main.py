@@ -13,7 +13,7 @@ async def example():
     return {"message": "Hello World"}
 
 
-@app.get("/items/")
+@app.get("/items")
 async def find_all():
     """
     全てのアイテムを取得します。
@@ -27,3 +27,11 @@ async def find_by_id(id: int):
     指定したIDのアイテムを取得します。
     """
     return item_cruds.find_by_id(id)
+
+
+@app.get("/items/")
+async def find_by_name(name: str):
+    """
+    指定した名前のアイテムを部分一致で取得します。
+    """
+    return item_cruds.find_by_name(name)

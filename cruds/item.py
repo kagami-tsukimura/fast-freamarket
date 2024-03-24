@@ -77,3 +77,19 @@ def find_by_id(item_id: int) -> Item:
     # NOTE: 複数の候補が存在する場合、最初の候補を返す
     # NOTE: 該当する候補がない場合、Noneを返す
     return next((item for item in items if item.id == item_id), None)
+
+
+def find_by_name(name: str) -> Item:
+    """
+    指定した名前のアイテムを部分一致で取得します。
+
+    Args:
+        name (str): アイテム名
+
+    Returns:
+        Item: 指定した名前のアイテム
+    """
+
+    filtered_items = [item for item in items if name in item.name]
+
+    return filtered_items if filtered_items else None
