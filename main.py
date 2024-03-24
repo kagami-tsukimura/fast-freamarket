@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import Body, FastAPI
 
 from cruds import item as item_cruds
 
@@ -35,3 +35,19 @@ async def find_by_name(name: str):
     指定した名前のアイテムを部分一致で取得します。
     """
     return item_cruds.find_by_name(name)
+
+
+@app.post("/items")
+async def create(create_item=Body(...)):
+    """
+    アイテムを新規登録します。
+    """
+    return item_cruds.create(create_item)
+
+
+@app.put("/items/{id}")
+async def update(id: int, update_item=Body(...)):
+    """
+    アイテムを更新します。
+    """
+    return item_cruds.update(id, update_item)
