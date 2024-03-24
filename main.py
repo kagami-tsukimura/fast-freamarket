@@ -52,7 +52,7 @@ async def create(create_item=Body(...)):
 @app.put("/items/{id}")
 async def update(id: int, update_item=Body(...)):
     """
-    アイテムを更新します。
+    指定したIDのアイテムを更新します。
     """
 
     return item_cruds.update(id, update_item)
@@ -61,7 +61,7 @@ async def update(id: int, update_item=Body(...)):
 @app.delete("/items/{id}")
 async def delete(id: int):
     """
-    アイテムを削除します。
+    指定したIDのアイテムを削除します。
     """
 
     return item_cruds.delete(id)
