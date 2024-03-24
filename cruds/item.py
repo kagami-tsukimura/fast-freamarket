@@ -45,8 +45,20 @@ items = [
         description="FastAPI",
         status=ItemStatus.SOLD_OUT,
     ),
+    Item(
+        id=3,
+        name="Book",
+        price=3000,
+        description="Python",
+        status=ItemStatus.ON_SALE,
+    ),
 ]
 
 
 def find_all() -> List[Item]:
     return items
+
+
+def find_by_id(item_id: int) -> Item:
+    # 複数の候補が存在する場合、最初の候補を返します。
+    return next(item for item in items if item.id == item_id)
