@@ -1,8 +1,6 @@
 from enum import Enum
 from typing import List, Optional
 
-from fastapi import HTTPException
-
 
 class ItemStatus(Enum):
     ON_SALE = "ON_SALE"
@@ -133,13 +131,12 @@ def update(id: int, update_item) -> Item:
     """
 
     item = find_by_id(id)
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
     item.name = update_item.get("name", item.name)
     item.price = update_item.get("price", item.price)
     item.description = update_item.get("description", item.description)
     item.status = update_item.get("status", item.status)
-    return item
+
+    return item if item else None
 
 
 def delete(id: int):
@@ -155,7 +152,6 @@ def delete(id: int):
     """
 
     item = find_by_id(id)
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
     items.remove(item)
-    return item
+
+    return item if item else None
