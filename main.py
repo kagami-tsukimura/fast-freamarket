@@ -7,14 +7,23 @@ app = FastAPI()
 
 @app.get("/")
 async def example():
+    """
+    起動確認としてHello Worldを返します。
+    """
     return {"message": "Hello World"}
 
 
 @app.get("/items/")
 async def find_all():
+    """
+    全てのアイテムを取得します。
+    """
     return item_cruds.find_all()
 
 
-@app.get("/items/{item_id}")
-async def find_by_id(item_id: int):
-    return item_cruds.find_by_id(item_id)
+@app.get("/items/{id}")
+async def find_by_id(id: int):
+    """
+    指定したIDのアイテムを取得します。
+    """
+    return item_cruds.find_by_id(id)
