@@ -56,9 +56,24 @@ items = [
 
 
 def find_all() -> List[Item]:
+    """
+    全てのアイテムを取得します。
+    """
+
     return items
 
 
 def find_by_id(item_id: int) -> Item:
-    # 複数の候補が存在する場合、最初の候補を返します。
-    return next(item for item in items if item.id == item_id)
+    """
+    指定したIDのアイテムを取得します。
+
+    Args:
+        item_id (int): アイテムID
+
+    Returns:
+        Item: 指定したIDのアイテム
+    """
+
+    # NOTE: 複数の候補が存在する場合、最初の候補を返す
+    # NOTE: 該当する候補がない場合、Noneを返す
+    return next((item for item in items if item.id == item_id), None)
