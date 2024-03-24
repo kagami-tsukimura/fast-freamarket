@@ -1,8 +1,6 @@
 from enum import Enum
 from typing import List, Optional
 
-from fastapi import HTTPException
-
 
 class ItemStatus(Enum):
     ON_SALE = "ON_SALE"
@@ -107,6 +105,7 @@ def create(create_item) -> Item:
     Returns:
         Item: 登録したアイテム
     """
+
     new_item = Item(
         len(items) + 1,
         create_item.get("name"),
@@ -130,11 +129,29 @@ def update(id: int, update_item) -> Item:
     Returns:
         Item: 更新したアイテム
     """
+
     item = find_by_id(id)
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
     item.name = update_item.get("name", item.name)
     item.price = update_item.get("price", item.price)
     item.description = update_item.get("description", item.description)
     item.status = update_item.get("status", item.status)
-    return item
+
+    return item if item else None
+
+
+def delete(id: int):
+    """
+    アイテムを削除します。
+
+    Args:
+        id (int): アイテムID
+        update_item (Item): 更新するアイテム
+
+    Returns:
+        Item: 削除したアイテム
+    """
+
+    item = find_by_id(id)
+    items.remove(item)
+
+    return item if item else None
