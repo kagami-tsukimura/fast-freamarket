@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, HTTPException, Path, Query
+from starlette import status
 
 from cruds import item as item_cruds
 from schemas import ItemCreate, ItemResponse, ItemUpdate
@@ -11,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get("", response_model=List[ItemResponse])
+@router.get("", response_model=List[ItemResponse], status_code=status.HTTP_200_OK)
 async def find_all():
     """
     全てのアイテムを取得します。
@@ -20,7 +21,7 @@ async def find_all():
     return item_cruds.find_all()
 
 
-@router.get("/{id}", response_model=ItemResponse)
+@router.get("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
 async def find_by_id(id: int = Path(gt=0)):
     """
     指定したIDのアイテムを取得します。
@@ -32,7 +33,7 @@ async def find_by_id(id: int = Path(gt=0)):
     return found_item
 
 
-@router.get("/", response_model=List[ItemResponse])
+@router.get("/", response_model=List[ItemResponse], status_code=status.HTTP_200_OK)
 async def find_by_name(name: str = Query(min_length=1, max_length=20)):
     """
     指定した名前のアイテムを先頭一致で取得します。
@@ -44,7 +45,7 @@ async def find_by_name(name: str = Query(min_length=1, max_length=20)):
     return found_item
 
 
-@router.post("", response_model=ItemResponse)
+@router.post("", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
 async def create(create_item: ItemCreate):
     """
     アイテムを新規登録します。
@@ -53,7 +54,7 @@ async def create(create_item: ItemCreate):
     return item_cruds.create(create_item)
 
 
-@router.put("/{id}", response_model=ItemResponse)
+@router.put("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
 async def update(update_item: ItemUpdate, id: int = Path(gt=0)):
     """
     指定したIDのアイテムを更新します。
@@ -65,7 +66,7 @@ async def update(update_item: ItemUpdate, id: int = Path(gt=0)):
     return updated_item
 
 
-@router.delete("/{id}", response_model=ItemResponse)
+@router.delete("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
 async def delete(id: int = Path(gt=0)):
     """
     指定したIDのアイテムを削除します。
