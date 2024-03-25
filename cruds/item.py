@@ -127,6 +127,10 @@ def update(id: int, update_item: ItemUpdate) -> Item:
     """
 
     item = find_by_id(id)
+    # early return
+    if not item:
+        return None
+
     item.name = update_item.name if update_item.name else item.name
     item.price = update_item.price if update_item.price else item.price
     item.description = (
@@ -134,7 +138,7 @@ def update(id: int, update_item: ItemUpdate) -> Item:
     )
     item.status = update_item.status if update_item.status else item.status
 
-    return item if item else None
+    return item
 
 
 def delete(id: int):
@@ -150,6 +154,10 @@ def delete(id: int):
     """
 
     item = find_by_id(id)
+    # early return
+    if not item:
+        return None
+
     items.remove(item)
 
-    return item if item else None
+    return item

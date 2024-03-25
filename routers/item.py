@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List
 
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter, HTTPException, Path, Query
 
 from cruds import item as item_cruds
 from schemas import ItemCreate, ItemResponse, ItemUpdate
@@ -20,13 +20,16 @@ async def find_all():
     return item_cruds.find_all()
 
 
-@router.get("/{id}", response_model=Optional[ItemResponse])
+@router.get("/{id}", response_model=ItemResponse)
 async def find_by_id(id: int = Path(gt=0)):
     """
     指定したIDのアイテムを取得します。
     """
 
-    return item_cruds.find_by_id(id)
+    found_item = item_cruds.find_by_id(id)
+    if not found_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return found_item
 
 
 @router.get("/", response_model=List[ItemResponse])
@@ -35,7 +38,10 @@ async def find_by_name(name: str = Query(min_length=1, max_length=20)):
     指定した名前のアイテムを先頭一致で取得します。
     """
 
-    return item_cruds.find_by_name(name)
+    found_item = item_cruds.find_by_id(id)
+    if not found_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return found_item
 
 
 @router.post("", response_model=ItemResponse)
@@ -47,19 +53,25 @@ async def create(create_item: ItemCreate):
     return item_cruds.create(create_item)
 
 
-@router.put("/{id}", response_model=Optional[ItemResponse])
+@router.put("/{id}", response_model=ItemResponse)
 async def update(update_item: ItemUpdate, id: int = Path(gt=0)):
     """
     指定したIDのアイテムを更新します。
     """
 
-    return item_cruds.update(id, update_item)
+    updated_item = item_cruds.update(id, update_item)
+    if not updated_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return updated_item
 
 
-@router.delete("/{id}", response_model=Optional[ItemResponse])
+@router.delete("/{id}", response_model=ItemResponse)
 async def delete(id: int = Path(gt=0)):
     """
     指定したIDのアイテムを削除します。
     """
 
-    return item_cruds.delete(id)
+    deleted_item = item_cruds.delete(id)
+    if not deleted_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return deleted_item
