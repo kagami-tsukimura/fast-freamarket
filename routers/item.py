@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Path
 
 from cruds import item as item_cruds
 from schemas import ItemCreate, ItemResponse, ItemUpdate
@@ -21,7 +21,7 @@ async def find_all():
 
 
 @router.get("/{id}", response_model=Optional[ItemResponse])
-async def find_by_id(id: int):
+async def find_by_id(id: int = Path(gt=0, title="アイテムID")):
     """
     指定したIDのアイテムを取得します。
     """
