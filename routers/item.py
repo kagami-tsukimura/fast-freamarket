@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body
 
 from cruds import item as item_cruds
+from schemas import ItemCreate
 
 router = APIRouter(
     prefix="/items",
@@ -36,7 +37,7 @@ async def find_by_name(name: str):
 
 
 @router.post("")
-async def create(create_item=Body(...)):
+async def create(create_item: ItemCreate):
     """
     アイテムを新規登録します。
     """
