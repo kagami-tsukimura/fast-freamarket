@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List, Optional
 
+from schemas import ItemCreate
+
 
 class ItemStatus(Enum):
     ON_SALE = "ON_SALE"
@@ -81,7 +83,7 @@ def find_by_id(item_id: int) -> Item:
 
 def find_by_name(name: str) -> Item:
     """
-    指定した名前のアイテムを部分一致で取得します。
+    指定した名前のアイテムを先頭一致で取得します。
 
     Args:
         name (str): アイテム名
@@ -90,17 +92,17 @@ def find_by_name(name: str) -> Item:
         Item: 指定した名前のアイテム
     """
 
-    filtered_items = [item for item in items if name in item.name]
+    filtered_items = [item for item in items if item.name.startswith(name)]
 
     return filtered_items if filtered_items else None
 
 
-def create(create_item) -> Item:
+def create(create_item: ItemCreate) -> Item:
     """
     アイテムを新規登録します。
 
     Args:
-        create_item (Item): 登録するアイテム
+        create_item (ItemCreate): 登録するアイテム
 
     Returns:
         Item: 登録したアイテム
@@ -108,9 +110,9 @@ def create(create_item) -> Item:
 
     new_item = Item(
         len(items) + 1,
-        create_item.get("name"),
-        create_item.get("price"),
-        create_item.get("description"),
+        create_item.name,
+        create_item.price,
+        create_item.description,
         ItemStatus.ON_SALE,
     )
     items.append(new_item)

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body
 
 from cruds import item as item_cruds
+from schemas import ItemCreate
 
 router = APIRouter(
     prefix="/items",
@@ -29,14 +30,14 @@ async def find_by_id(id: int):
 @router.get("/")
 async def find_by_name(name: str):
     """
-    指定した名前のアイテムを部分一致で取得します。
+    指定した名前のアイテムを先頭一致で取得します。
     """
 
     return item_cruds.find_by_name(name)
 
 
 @router.post("")
-async def create(create_item=Body(...)):
+async def create(create_item: ItemCreate):
     """
     アイテムを新規登録します。
     """
