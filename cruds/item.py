@@ -1,12 +1,6 @@
-from enum import Enum
 from typing import List, Optional
 
-from schemas import ItemCreate
-
-
-class ItemStatus(Enum):
-    ON_SALE = "ON_SALE"
-    SOLD_OUT = "SOLD_OUT"
+from schemas import ItemCreate, ItemStatus, ItemUpdate
 
 
 class Item:
@@ -120,23 +114,25 @@ def create(create_item: ItemCreate) -> Item:
     return new_item
 
 
-def update(id: int, update_item) -> Item:
+def update(id: int, update_item: ItemUpdate) -> Item:
     """
     アイテムを更新します。
 
     Args:
         id (int): アイテムID
-        update_item (Item): 更新するアイテム
+        update_item (ItemUpdate): 更新するアイテム
 
     Returns:
         Item: 更新したアイテム
     """
 
     item = find_by_id(id)
-    item.name = update_item.get("name", item.name)
-    item.price = update_item.get("price", item.price)
-    item.description = update_item.get("description", item.description)
-    item.status = update_item.get("status", item.status)
+    item.name = update_item.name if update_item.name else item.name
+    item.price = update_item.price if update_item.price else item.price
+    item.description = (
+        update_item.description if update_item.description else item.description
+    )
+    item.status = update_item.status if update_item.status else item.status
 
     return item if item else None
 
