@@ -81,7 +81,7 @@ def find_by_id(item_id: int) -> Item:
 
 def find_by_name(name: str) -> Item:
     """
-    指定した名前のアイテムを部分一致で取得します。
+    指定した名前のアイテムを先頭一致で取得します。
 
     Args:
         name (str): アイテム名
@@ -90,7 +90,7 @@ def find_by_name(name: str) -> Item:
         Item: 指定した名前のアイテム
     """
 
-    filtered_items = [item for item in items if name in item.name]
+    filtered_items = [item for item in items if item.name.startswith(name)]
 
     return filtered_items if filtered_items else None
 
