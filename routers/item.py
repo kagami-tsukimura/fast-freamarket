@@ -21,7 +21,7 @@ async def find_all():
 
 
 @router.get("/{id}", response_model=Optional[ItemResponse])
-async def find_by_id(id: int = Path(gt=0, title="アイテムID")):
+async def find_by_id(id: int = Path(gt=0)):
     """
     指定したIDのアイテムを取得します。
     """
@@ -48,7 +48,7 @@ async def create(create_item: ItemCreate):
 
 
 @router.put("/{id}", response_model=Optional[ItemResponse])
-async def update(id: int, update_item: ItemUpdate):
+async def update(update_item: ItemUpdate, id: int = Path(gt=0)):
     """
     指定したIDのアイテムを更新します。
     """
@@ -57,7 +57,7 @@ async def update(id: int, update_item: ItemUpdate):
 
 
 @router.delete("/{id}", response_model=Optional[ItemResponse])
-async def delete(id: int):
+async def delete(id: int = Path(gt=0)):
     """
     指定したIDのアイテムを削除します。
     """
