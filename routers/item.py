@@ -29,10 +29,8 @@ async def find_by_id(id: int = Path(gt=0)):
     return item_cruds.find_by_id(id)
 
 
-@router.get("/")
-async def find_by_name(
-    name: str = Query(min_length=2, max_length=20), response_model=List[ItemResponse]
-):
+@router.get("/", response_model=List[ItemResponse])
+async def find_by_name(name: str = Query(min_length=1, max_length=20)):
     """
     指定した名前のアイテムを先頭一致で取得します。
     """
