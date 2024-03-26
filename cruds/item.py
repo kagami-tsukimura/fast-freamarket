@@ -5,44 +5,42 @@ from sqlalchemy.orm import Session
 from models import Item
 from schemas import ItemCreate, ItemUpdate
 
-# def find_all() -> List[Item]:
-#     """
-#     全てのアイテムを取得します。
-#     """
 
-#     return items
+def find_all(db: Session) -> List[Item]:
+    """
+    DBから全てのアイテムを取得します.
+    """
 
-
-# def find_by_id(item_id: int) -> Item:
-#     """
-#     指定したIDのアイテムを取得します。
-
-#     Args:
-#         item_id (int): アイテムID
-
-#     Returns:
-#         Item: 指定したIDのアイテム
-#     """
-
-#     # NOTE: 複数の候補が存在する場合、最初の候補を返す
-#     # NOTE: 該当する候補がない場合、Noneを返す
-#     return next((item for item in items if item.id == item_id), None)
+    return db.query(Item).all()
 
 
-# def find_by_name(name: str) -> Item:
-#     """
-#     指定した名前のアイテムを先頭一致で取得します。
+def find_by_id(db: Session, item_id: int) -> Item:
+    """
+    DBから指定したIDのアイテムを取得します.
 
-#     Args:
-#         name (str): アイテム名
+    Args:
+        item_id (int): アイテムID
 
-#     Returns:
-#         Item: 指定した名前のアイテム
-#     """
+    Returns:
+        Item: 指定したIDのアイテム
+    """
 
-#     filtered_items = [item for item in items if item.name.startswith(name)]
+    # NOTE: 複数の候補が存在する場合は最初の候補を返す
+    return db.query(Item).filter(Item.id == item_id).first()
 
-#     return filtered_items if filtered_items else None
+
+def find_by_name(db: Session, name: str) -> List[Item]:
+    """
+    指定した名前のアイテムを部分一致で取得します.
+
+    Args:
+        name (str): アイテム名
+
+    Returns:
+        Item: 指定した名前のアイテム
+    """
+
+    return db.query(Item).filter(Item.name.contains(name)).all()
 
 
 def create(db: Session, create_item: ItemCreate) -> Item:

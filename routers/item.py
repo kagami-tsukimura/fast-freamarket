@@ -16,37 +16,39 @@ router = APIRouter(
 )
 
 
-# @router.get("", response_model=List[ItemResponse], status_code=status.HTTP_200_OK)
-# async def find_all():
-#     """
-#     全てのアイテムを取得します。
-#     """
+@router.get("", response_model=List[ItemResponse], status_code=status.HTTP_200_OK)
+async def find_all(db: DbDependency):
+    """
+    全てのアイテムを取得します。
+    """
 
-#     return item_cruds.find_all()
-
-
-# @router.get("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
-# async def find_by_id(id: int = Path(gt=0)):
-#     """
-#     指定したIDのアイテムを取得します。
-#     """
-
-#     found_item = item_cruds.find_by_id(id)
-#     if not found_item:
-#         raise HTTPException(status_code=404, detail="Item not found")
-#     return found_item
+    return item_cruds.find_all(db)
 
 
-# @router.get("/", response_model=List[ItemResponse], status_code=status.HTTP_200_OK)
-# async def find_by_name(name: str = Query(min_length=1, max_length=20)):
-#     """
-#     指定した名前のアイテムを先頭一致で取得します。
-#     """
+@router.get("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
+async def find_by_id(db: DbDependency, id: int = Path(gt=0)):
+    """
+    DBから指定したIDのアイテムを取得します.
+    """
 
-#     found_item = item_cruds.find_by_id(id)
-#     if not found_item:
-#         raise HTTPException(status_code=404, detail="Item not found")
-#     return found_item
+    found_item = item_cruds.find_by_id(db, id)
+    if not found_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return found_item
+
+
+@router.get("/", response_model=List[ItemResponse], status_code=status.HTTP_200_OK)
+async def find_by_name(
+    db: DbDependency, name: str = Query(min_length=1, max_length=20)
+):
+    """
+    指定した名前のアイテムを部分一致で取得します.
+    """
+
+    found_item = item_cruds.find_by_name(db, name)
+    if not found_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return found_item
 
 
 @router.post("", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
