@@ -11,7 +11,7 @@ def find_all(db: Session) -> List[Item]:
     DBから全てのアイテムを取得します.
     """
 
-    return db.query(Item).all()
+    return db.query(Item).order_by(Item.id).all()
 
 
 def find_by_id(db: Session, item_id: int) -> Item:
@@ -31,7 +31,7 @@ def find_by_id(db: Session, item_id: int) -> Item:
 
 def find_by_name(db: Session, name: str) -> List[Item]:
     """
-    指定した名前のアイテムを部分一致で取得します.
+    DBから指定した名前のアイテムを部分一致で取得します.
 
     Args:
         name (str): アイテム名
@@ -40,7 +40,7 @@ def find_by_name(db: Session, name: str) -> List[Item]:
         Item: 指定した名前のアイテム
     """
 
-    return db.query(Item).filter(Item.name.contains(name)).all()
+    return db.query(Item).filter(Item.name.contains(name)).order_by(Item.id).all()
 
 
 def create(db: Session, create_item: ItemCreate) -> Item:
@@ -61,50 +61,54 @@ def create(db: Session, create_item: ItemCreate) -> Item:
     return new_item
 
 
-# def update(id: int, update_item: ItemUpdate) -> Item:
-#     """
-#     アイテムを更新します。
+def update(db: Session, id: int, update_item: ItemUpdate) -> Item:
+    """
+    DBから指定したIDのアイテムを更新します.
 
-#     Args:
-#         id (int): アイテムID
-#         update_item (ItemUpdate): 更新するアイテム
+    Args:
+        id (int): アイテムID
+        update_item (ItemUpdate): 更新するアイテム
 
-#     Returns:
-#         Item: 更新したアイテム
-#     """
+    Returns:
+        Item: 更新したアイテム
+    """
 
-#     item = find_by_id(id)
-#     # early return
-#     if not item:
-#         return None
+    item = find_by_id(db, id)
+    # early return
+    if not item:
+        return None
 
-#     item.name = update_item.name if update_item.name else item.name
-#     item.price = update_item.price if update_item.price else item.price
-#     item.description = (
-#         update_item.description if update_item.description else item.description
-#     )
-#     item.status = update_item.status if update_item.status else item.status
+    item.name = update_item.name if update_item.name else item.name
+    item.price = update_item.price if update_item.price else item.price
+    item.description = (
+        update_item.description if update_item.description else item.description
+    )
+    item.status = update_item.status if update_item.status else item.status
 
-#     return item
+    db.add(item)
+    db.commit()
+
+    return item
 
 
-# def delete(id: int):
-#     """
-#     アイテムを削除します。
+def delete(db: Session, id: int):
+    """
+    DBから指定したIDのアイテムを削除します.
 
-#     Args:
-#         id (int): アイテムID
-#         update_item (Item): 更新するアイテム
+    Args:
+        id (int): アイテムID
+        update_item (Item): 更新するアイテム
 
-#     Returns:
-#         Item: 削除したアイテム
-#     """
+    Returns:
+        Item: 削除したアイテム
+    """
 
-#     item = find_by_id(id)
-#     # early return
-#     if not item:
-#         return None
+    item = find_by_id(db, id)
+    # early return
+    if not item:
+        return None
 
-#     items.remove(item)
+    db.delete(item)
+    db.commit()
 
-#     return item
+    return item
