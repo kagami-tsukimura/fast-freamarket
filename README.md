@@ -68,9 +68,18 @@ docker-compose exec app sh
 
 ```bash:
 alembic init migrations
+sudo chown -R $(whoami):$(whoami) migrations/ alembic.ini
 ```
 
-3. migrations/env.pyの修正。
+3. alembic.iniの修正
+
+```ini:
+sqlalchemy.url = postgresql://postgres:postgres@postgres:5432/admin
+# connection local
+# sqlalchemy.url = postgresql://postgres:postgres@localhost:25432/admin
+```
+
+4. migrations/env.pyの修正。
 
 ```python: env.py
 from models import Base
@@ -78,29 +87,18 @@ from models import Base
 target_metadata = Base.metadata
 ```
 
-4. マイグレーションコマンドの実行。
+5. マイグレーションコマンドの実行。
 
 ```bash:
  alembic revision --autogenerate -m "Create items table"
 ```
 
-5. マイグレーションの適用。
+6. マイグレーションの適用。
 
 ```bash:
 alembic upgrade head
 ```
 
-- まとめ
-
-```bash:
-docker-compose exec app sh
-```
-
-```bash:
-alembic init migrations
-alembic revision --autogenerate -m "Create items table"
-alembic upgrade head
-```
 
 - ローカル起動の場合
 
