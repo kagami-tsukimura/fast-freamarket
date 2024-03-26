@@ -57,7 +57,54 @@ uvicorn main:app --reload
 
 ## DBマイグレーション
 
-1. DBマイグレーションファイルの作成
+- コンテナ起動の場合
+
+1. appコンテナに入る
+```bash:
+docker-compose exec app sh
+```
+
+2. DBマイグレーション環境の作成
+
+```bash:
+alembic init migrations
+```
+
+3. migrations/env.pyの修正。
+
+```python: env.py
+from models import Base
+
+target_metadata = Base.metadata
+```
+
+4. マイグレーションコマンドの実行。
+
+```bash:
+ alembic revision --autogenerate -m "Create items table"
+```
+
+5. マイグレーションの適用。
+
+```bash:
+alembic upgrade head
+```
+
+- まとめ
+
+```bash:
+docker-compose exec app sh
+```
+
+```bash:
+alembic init migrations
+alembic revision --autogenerate -m "Create items table"
+alembic upgrade head
+```
+
+- ローカル起動の場合
+
+1. DBマイグレーション環境の作成
 
 ```bash:
 alembic init migrations
@@ -88,3 +135,29 @@ target_metadata = Base.metadata
 ```bash:
 alembic upgrade head
 ```
+
+
+
+## pgadminの接続
+
+- General
+  - 名前: admin
+- 接続
+  - ホスト名/アドレス: postgres
+  - ポート番号: 5432
+  - ユーザ名: postgres
+  - パスワード: postgres
+
+## requirements.txtを変更した場合
+
+1. dockerを停止する。
+```bash:
+docker-compose stop
+docker-compose rm -f
+```
+
+2. コンテナを起動する。
+```bash:
+docker-compose up -d
+```
+

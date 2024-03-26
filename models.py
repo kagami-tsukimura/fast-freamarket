@@ -1,9 +1,14 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from sqlalchemy import Column, DateTime, Enum, Integer, String
 
 from database import Base
 from schemas import ItemStatus
+
+
+def current_time():
+    return datetime.now(ZoneInfo("Asia/Tokyo"))
 
 
 class Item(Base):
@@ -17,5 +22,9 @@ class Item(Base):
     price = Column(Integer, nullable=False)
     description = Column(String, nullable=True)
     status = Column(Enum(ItemStatus), nullable=False, default=ItemStatus.ON_SALE)
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    created_at = Column(DateTime, default=current_time())
+    updated_at = Column(
+        DateTime,
+        default=current_time(),
+        onupdate=current_time(),
+    )
