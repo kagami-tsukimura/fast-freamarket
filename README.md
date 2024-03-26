@@ -54,3 +54,37 @@ uvicorn main:app --reload
 
 アプリケーションが起動したら、`/docs`にアクセスして、Swagger UI を介して API を探索できます。  
 また、`/redoc`で ReDoc を使用して API ドキュメントを見ることもできます。
+
+## DBマイグレーション
+
+1. DBマイグレーションファイルの作成
+
+```bash:
+alembic init migrations
+```
+
+2. alembic.iniのsqlalchemy.urlを実際の環境に合わせる。
+
+```ini: alembic.ini
+sqlalchemy.url = postgresql://postgres:postgres@localhost:25432/admin
+```
+
+3. migrations/env.pyの修正。
+
+```python: env.py
+from models import Base
+
+target_metadata = Base.metadata
+```
+
+4. マイグレーションコマンドの実行。
+
+```bash:
+ alembic revision --autogenerate -m "Create items table"
+```
+
+5. マイグレーションの適用。
+
+```bash:
+alembic upgrade head
+```
