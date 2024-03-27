@@ -2,6 +2,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from sqlalchemy import Column, DateTime, Enum, Integer, String
+from sqlalchemy.sql.functions import current_timestamp
 
 from database import Base
 from schemas import ItemStatus
@@ -22,9 +23,16 @@ class Item(Base):
     price = Column(Integer, nullable=False)
     description = Column(String, nullable=True)
     status = Column(Enum(ItemStatus), nullable=False, default=ItemStatus.ON_SALE)
-    created_at = Column(DateTime, default=current_time())
+    created_at = Column(DateTime, default=current_timestamp())
     updated_at = Column(
         DateTime,
-        default=current_time(),
-        onupdate=current_time(),
+        default=current_timestamp(),
+        onupdate=current_timestamp(),
     )
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String, nullable=False, unique=True)

@@ -19,7 +19,13 @@ router = APIRouter(
 @router.get("", response_model=List[ItemResponse], status_code=status.HTTP_200_OK)
 async def find_all(db: DbDependency):
     """
-    DBから全てのアイテムを取得します。
+    全てのアイテムを取得します。
+
+    Args:
+        db (DbDependency): データベースセッションの依存関係
+
+    Returns:
+        List[ItemResponse]: 取得したアイテムのリスト
     """
 
     return item_cruds.find_all(db)
@@ -28,7 +34,14 @@ async def find_all(db: DbDependency):
 @router.get("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
 async def find_by_id(db: DbDependency, id: int = Path(gt=0)):
     """
-    DBから指定したIDのアイテムを取得します.
+    指定したIDのアイテムを取得します。
+
+    Args:
+        db (DbDependency): データベースセッションの依存関係
+        id (int): アイテムID
+
+    Returns:
+        found_item: 取得したアイテム
     """
 
     found_item = item_cruds.find_by_id(db, id)
@@ -42,7 +55,14 @@ async def find_by_name(
     db: DbDependency, name: str = Query(min_length=1, max_length=20)
 ):
     """
-    DBから指定した名前のアイテムを部分一致で取得します.
+    指定した名前のアイテムを部分一致で取得します。
+
+    Args:
+        db (DbDependency): データベースセッションの依存関係
+        name (str): アイテム名
+
+    Returns:
+        found_item: 取得したアイテム
     """
 
     found_item = item_cruds.find_by_name(db, name)
@@ -52,9 +72,16 @@ async def find_by_name(
 
 
 @router.post("", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
-async def create(create_item: ItemCreate, db: DbDependency):
+async def create(db: DbDependency, create_item: ItemCreate):
     """
-    アイテムをDBに新規登録します.
+    アイテムを新規作成します。
+
+    Args:
+        db (DbDependency): データベースセッションの依存関係
+        create_item (ItemCreate): 作成するアイテムのデータ
+
+    Returns:
+        ItemResponse: 作成したアイテム
     """
 
     return item_cruds.create(db, create_item)
@@ -63,7 +90,15 @@ async def create(create_item: ItemCreate, db: DbDependency):
 @router.put("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
 async def update(db: DbDependency, update_item: ItemUpdate, id: int = Path(gt=0)):
     """
-    DBから指定したIDのアイテムを更新します.
+    指定したIDのアイテムを更新します。
+
+    Args:
+        db (DbDependency): データベースセッションの依存関係
+        update_item (ItemUpdate): 更新するアイテムのデータ
+        id (int): アイテムID
+
+    Returns:
+        updated_item: 更新したアイテム
     """
 
     updated_item = item_cruds.update(db, id, update_item)
@@ -75,7 +110,14 @@ async def update(db: DbDependency, update_item: ItemUpdate, id: int = Path(gt=0)
 @router.delete("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
 async def delete(db: DbDependency, id: int = Path(gt=0)):
     """
-    DBから指定したIDのアイテムを削除します.
+    指定したIDのアイテムを削除します。
+
+    Args:
+        db (DbDependency): データベースセッションの依存関係
+        id (int): アイテムID
+
+    Returns:
+        deleted_item: 削除したアイテム
     """
 
     deleted_item = item_cruds.delete(db, id)
