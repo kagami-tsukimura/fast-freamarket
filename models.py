@@ -36,3 +36,10 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     username = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    created_at = Column(DateTime, default=current_timestamp())
+    updated_at = Column(
+        DateTime,
+        default=current_timestamp(),
+        onupdate=current_timestamp(),
+    )
