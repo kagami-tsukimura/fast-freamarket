@@ -8,7 +8,13 @@ from schemas import ItemCreate, ItemUpdate
 
 def find_all(db: Session) -> List[Item]:
     """
-    DBから全てのアイテムを取得します.
+    全てのアイテムを取得します。
+
+    Args:
+        db (Session): データベースセッション
+
+    Returns:
+        List[Item]: 取得した全アイテムのリスト
     """
 
     return db.query(Item).order_by(Item.id).all()
@@ -16,9 +22,10 @@ def find_all(db: Session) -> List[Item]:
 
 def find_by_id(db: Session, item_id: int) -> Item:
     """
-    DBから指定したIDのアイテムを取得します.
+    指定したIDのアイテムを取得します。
 
     Args:
+        db (Session): データベースセッション
         item_id (int): アイテムID
 
     Returns:
@@ -31,9 +38,10 @@ def find_by_id(db: Session, item_id: int) -> Item:
 
 def find_by_name(db: Session, name: str) -> List[Item]:
     """
-    DBから指定した名前のアイテムを部分一致で取得します.
+    指定した名前のアイテムを部分一致で取得します。
 
     Args:
+        db (Session): データベースセッション
         name (str): アイテム名
 
     Returns:
@@ -45,9 +53,10 @@ def find_by_name(db: Session, name: str) -> List[Item]:
 
 def create(db: Session, create_item: ItemCreate) -> Item:
     """
-    アイテムをDBに新規登録します.
+    アイテムを新規登録します。
 
     Args:
+        db (Session): データベースセッション
         create_item (ItemCreate): 登録するアイテム
 
     Returns:
@@ -63,9 +72,10 @@ def create(db: Session, create_item: ItemCreate) -> Item:
 
 def update(db: Session, id: int, update_item: ItemUpdate) -> Item:
     """
-    DBから指定したIDのアイテムを更新します.
+    指定したIDのアイテムを更新します。
 
     Args:
+        db (Session): データベースセッション
         id (int): アイテムID
         update_item (ItemUpdate): 更新するアイテム
 
@@ -93,11 +103,11 @@ def update(db: Session, id: int, update_item: ItemUpdate) -> Item:
 
 def delete(db: Session, id: int):
     """
-    DBから指定したIDのアイテムを削除します.
+    指定したIDのアイテムを削除します。
 
     Args:
+        db (Session): データベースセッション
         id (int): アイテムID
-        update_item (Item): 更新するアイテム
 
     Returns:
         Item: 削除したアイテム
