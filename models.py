@@ -1,4 +1,5 @@
-from sqlalchemy import Column, DateTime, Enum, Integer, String
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.functions import current_timestamp
 
 from database import Base
@@ -22,6 +23,11 @@ class Item(Base):
         default=current_timestamp(),
         onupdate=current_timestamp(),
     )
+    user_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+
+    user = relationship("User", back_populates="items")
 
 
 class User(Base):
@@ -37,3 +43,5 @@ class User(Base):
         default=current_timestamp(),
         onupdate=current_timestamp(),
     )
+
+    items = relationship("Item", back_populates="user")
