@@ -111,10 +111,9 @@ alembic upgrade head
 
 ## requirements.txtを変更した場合
 
-1. dockerを停止する。
+1. dockerを終了する。
 ```bash:
-docker-compose stop
-docker-compose rm -f
+docker-compose down -v
 ```
 
 2. コンテナを起動する。
@@ -122,3 +121,12 @@ docker-compose rm -f
 docker-compose up -d
 ```
 
+## 秘密鍵の作成
+
+1. opensslコマンドを実行する。
+
+```bash:
+openssl rand -hex 32
+```
+
+2. opensslコマンドで返ってきた値を使用する。
