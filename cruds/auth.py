@@ -2,15 +2,21 @@ import base64
 import hashlib
 import os
 from datetime import datetime, timedelta
+from typing import Annotated
 
-from jose import jwt
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from models import User
-from schemas import UserCreate
+from schemas import DecodedToken, UserCreate
 
 ALGORITHM = "HS256"
 SECRET_KEY = "d71afefe71224d864f67b71cd9d3d91ad709ef6bd6eaa3e6166d2f4d1f4f37ab"
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def create_user(db: Session, user_create: UserCreate):
@@ -52,3 +58,19 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     payload = {"sub": username, "id": user_id, "exp": expires}
 
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        user_id = payload.get("id")
+
+        return (
+            DecodedToken(username=username, user_id=user_id)
+            if username and user_id
+            else None
+        )
+
+    except JWTError:
+        raise JWTError
