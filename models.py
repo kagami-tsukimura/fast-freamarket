@@ -1,15 +1,8 @@
-from datetime import datetime
-from zoneinfo import ZoneInfo
-
 from sqlalchemy import Column, DateTime, Enum, Integer, String
 from sqlalchemy.sql.functions import current_timestamp
 
 from database import Base
 from schemas import ItemStatus
-
-
-def current_time():
-    return datetime.now(ZoneInfo("Asia/Tokyo"))
 
 
 class Item(Base):
