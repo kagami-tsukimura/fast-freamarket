@@ -27,3 +27,16 @@ def create_user(db: Session, user_create: UserCreate):
     db.commit()
 
     return new_user
+
+
+def authenticate_user(db: Session, username: str, password: str):
+    user = db.query(User).filter(User.username == username).first()
+    # early return
+    if not user:
+        return None
+
+    hashed_password = hashlib.pbkdf2_hmac(
+        "sha256", password.encode(), user.salt.encode(), 1000
+    ).hex()
+
+    return user if user.password == hashed_password else None
