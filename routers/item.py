@@ -4,11 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.orm import Session
 from starlette import status
 
+from cruds import auth as auth_cruds
 from cruds import item as item_cruds
 from database import get_db
-from schemas import ItemCreate, ItemResponse, ItemUpdate
+from schemas import DecodedToken, ItemCreate, ItemResponse, ItemUpdate
 
 DbDependency = Annotated[Session, Depends(get_db)]
+
+UserDependency = Annotated[DecodedToken, Depends(auth_cruds.get_current_user)]
 
 router = APIRouter(
     prefix="/items",
@@ -72,7 +75,7 @@ async def find_by_name(
 
 
 @router.post("", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
-async def create(db: DbDependency, create_item: ItemCreate):
+async def create(db: DbDependency, user: UserDependency, create_item: ItemCreate):
     """
     アイテムを新規作成します。
 
@@ -84,7 +87,7 @@ async def create(db: DbDependency, create_item: ItemCreate):
         ItemResponse: 作成したアイテム
     """
 
-    return item_cruds.create(db, create_item)
+    return item_cruds.create(db, create_item, user.user_id)
 
 
 @router.put("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)

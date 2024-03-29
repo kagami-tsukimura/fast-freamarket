@@ -51,7 +51,7 @@ def find_by_name(db: Session, name: str) -> List[Item]:
     return db.query(Item).filter(Item.name.contains(name)).order_by(Item.id).all()
 
 
-def create(db: Session, create_item: ItemCreate) -> Item:
+def create(db: Session, create_item: ItemCreate, user_id: int) -> Item:
     """
     アイテムを新規登録します。
 
@@ -63,7 +63,7 @@ def create(db: Session, create_item: ItemCreate) -> Item:
         Item: 登録したアイテム
     """
 
-    new_item = Item(**create_item.model_dump())
+    new_item = Item(**create_item.model_dump(), user_id=user_id)
     db.add(new_item)
     db.commit()
 
