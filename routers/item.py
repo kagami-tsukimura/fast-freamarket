@@ -103,7 +103,7 @@ async def update(db: DbDependency, update_item: ItemUpdate, id: int = Path(gt=0)
 
     updated_item = item_cruds.update(db, id, update_item)
     if not updated_item:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="Item not updated")
     return updated_item
 
 
@@ -122,5 +122,5 @@ async def delete(db: DbDependency, id: int = Path(gt=0)):
 
     deleted_item = item_cruds.delete(db, id)
     if not deleted_item:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="Item not deleted")
     return deleted_item
