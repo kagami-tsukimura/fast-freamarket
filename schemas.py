@@ -31,6 +31,7 @@ class ItemResponse(BaseModel):
     status: ItemStatus = Field(examples=[ItemStatus.ON_SALE])
     created_at: datetime
     updated_at: datetime
+    user_id: int
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -57,3 +58,20 @@ class Token(BaseModel):
 class DecodedToken(BaseModel):
     username: str
     user_id: int
+
+
+class ItemSubCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=20, examples=["PC"])
+
+
+class ItemSubUpdate(BaseModel):
+    name: Optional[str] = Field(min_length=2, max_length=20, examples=["PC"])
+
+
+class ItemSubResponse(BaseModel):
+    id: int = Field(gt=0, examples=[1])
+    name: str = Field(min_length=2, max_length=20, examples=["PC"])
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
