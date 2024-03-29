@@ -4,11 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.orm import Session
 from starlette import status
 
+from cruds import auth as auth_cruds
 from cruds import item as item_cruds
 from database import get_db
-from schemas import ItemCreate, ItemResponse, ItemUpdate
+from schemas import DecodedToken, ItemCreate, ItemResponse, ItemUpdate
 
 DbDependency = Annotated[Session, Depends(get_db)]
+
+UserDependency = Annotated[DecodedToken, Depends(auth_cruds.get_current_user)]
 
 router = APIRouter(
     prefix="/items",
@@ -32,7 +35,7 @@ async def find_all(db: DbDependency):
 
 
 @router.get("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
-async def find_by_id(db: DbDependency, id: int = Path(gt=0)):
+async def find_by_id(db: DbDependency, user: UserDependency, id: int = Path(gt=0)):
     """
     指定したIDのアイテムを取得します。
 
@@ -44,7 +47,7 @@ async def find_by_id(db: DbDependency, id: int = Path(gt=0)):
         found_item: 取得したアイテム
     """
 
-    found_item = item_cruds.find_by_id(db, id)
+    found_item = item_cruds.find_by_id(db, id, user.user_id)
     if not found_item:
         raise HTTPException(status_code=404, detail="Item not found")
     return found_item
@@ -72,7 +75,7 @@ async def find_by_name(
 
 
 @router.post("", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
-async def create(db: DbDependency, create_item: ItemCreate):
+async def create(db: DbDependency, user: UserDependency, create_item: ItemCreate):
     """
     アイテムを新規作成します。
 
@@ -84,11 +87,16 @@ async def create(db: DbDependency, create_item: ItemCreate):
         ItemResponse: 作成したアイテム
     """
 
-    return item_cruds.create(db, create_item)
+    return item_cruds.create(db, create_item, user.user_id)
 
 
 @router.put("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
-async def update(db: DbDependency, update_item: ItemUpdate, id: int = Path(gt=0)):
+async def update(
+    db: DbDependency,
+    user: UserDependency,
+    update_item: ItemUpdate,
+    id: int = Path(gt=0),
+):
     """
     指定したIDのアイテムを更新します。
 
@@ -101,14 +109,14 @@ async def update(db: DbDependency, update_item: ItemUpdate, id: int = Path(gt=0)
         updated_item: 更新したアイテム
     """
 
-    updated_item = item_cruds.update(db, id, update_item)
+    updated_item = item_cruds.update(db, id, update_item, user.user_id)
     if not updated_item:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="Item not updated")
     return updated_item
 
 
 @router.delete("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
-async def delete(db: DbDependency, id: int = Path(gt=0)):
+async def delete(db: DbDependency, user: UserDependency, id: int = Path(gt=0)):
     """
     指定したIDのアイテムを削除します。
 
@@ -120,7 +128,7 @@ async def delete(db: DbDependency, id: int = Path(gt=0)):
         deleted_item: 削除したアイテム
     """
 
-    deleted_item = item_cruds.delete(db, id)
+    deleted_item = item_cruds.delete(db, id, user.user_id)
     if not deleted_item:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="Item not deleted")
     return deleted_item
