@@ -20,7 +20,7 @@ def find_all(db: Session) -> List[Item]:
     return db.query(Item).order_by(Item.id).all()
 
 
-def find_by_id(db: Session, item_id: int) -> Item:
+def find_by_id(db: Session, item_id: int, user_id: int) -> Item:
     """
     指定したIDのアイテムを取得します。
 
@@ -33,7 +33,12 @@ def find_by_id(db: Session, item_id: int) -> Item:
     """
 
     # NOTE: 複数の候補が存在する場合は最初の候補を返す
-    return db.query(Item).filter(Item.id == item_id).first()
+    return (
+        db.query(Item)
+        .filter(Item.id == item_id)
+        .filter(Item.user_id == user_id)
+        .first()
+    )
 
 
 def find_by_name(db: Session, name: str) -> List[Item]:
@@ -70,7 +75,7 @@ def create(db: Session, create_item: ItemCreate, user_id: int) -> Item:
     return new_item
 
 
-def update(db: Session, id: int, update_item: ItemUpdate) -> Item:
+def update(db: Session, id: int, update_item: ItemUpdate, user_id: int) -> Item:
     """
     指定したIDのアイテムを更新します。
 
@@ -83,7 +88,7 @@ def update(db: Session, id: int, update_item: ItemUpdate) -> Item:
         Item: 更新したアイテム
     """
 
-    item = find_by_id(db, id)
+    item = find_by_id(db, id, user_id)
     # early return
     if not item:
         return None
@@ -101,7 +106,7 @@ def update(db: Session, id: int, update_item: ItemUpdate) -> Item:
     return item
 
 
-def delete(db: Session, id: int):
+def delete(db: Session, id: int, user_id: int):
     """
     指定したIDのアイテムを削除します。
 
@@ -113,7 +118,7 @@ def delete(db: Session, id: int):
         Item: 削除したアイテム
     """
 
-    item = find_by_id(db, id)
+    item = find_by_id(db, id, user_id)
     # early return
     if not item:
         return None
