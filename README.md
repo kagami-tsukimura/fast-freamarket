@@ -60,7 +60,7 @@ uvicorn main:app --reload
 
 1. appコンテナに入る
 ```bash:
-docker-compose exec app sh
+docker-compose exec app /bin/bash
 ```
 
 2. DBマイグレーション環境の作成
