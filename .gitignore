@@ -3,3 +3,5 @@ fast/
 .prettierignore
 docker/
 migrations/
+# .env
+.env
