@@ -2,10 +2,19 @@ from time import time
 
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from routers import auth, item, item_sub
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    # localhost:3000からの操作のみ許可
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # 処理時間計測ミドルウェア
