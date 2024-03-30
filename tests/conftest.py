@@ -1,5 +1,10 @@
+# flake8: noqa: E402
 import os
 import sys
+
+parent_dir = os.path.join(os.path.dirname(__file__), "..")
+sys.path.append(parent_dir)
+
 
 import pytest
 from fastapi.testclient import TestClient
@@ -12,9 +17,6 @@ from database import get_db
 from main import app
 from models import Base, Item
 from schemas import DecodedToken
-
-parent_dir = os.path.dirname(os.path.dirname(__file__), "..")
-sys.path.append(parent_dir)
 
 
 @pytest.fixture()
