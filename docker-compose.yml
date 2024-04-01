@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 services:
   app:
@@ -9,6 +9,7 @@ services:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
+    restart: always
     command:
       [
         "bash",
