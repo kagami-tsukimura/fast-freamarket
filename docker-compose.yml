@@ -9,6 +9,7 @@ services:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
+    restart: always
     command:
       [
         "bash",
