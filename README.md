@@ -23,7 +23,13 @@ pip install -r requirements.txt
 ### docker-compose.ymlを使用した起動
 
 `docker-compose.yml`ファイルを使用して、サービスを起動します。
+初回のみ、`--build`をつけて実行してください。
 
+```bash:
+docker-compose up -d --build
+```
+
+2回目以降。
 ```bash:
 docker-compose up -d
 ```
