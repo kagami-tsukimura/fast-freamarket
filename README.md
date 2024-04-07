@@ -73,7 +73,7 @@ docker-compose exec app /bin/bash
 
 ```bash:
 alembic init migrations
-sudo chown -R $(whoami):$(whoami) migrations/
+sudo chown -R $(whoami):$(whoami) migrations/ alembic.ini
 ```
 
 3. alembic.iniの修正
