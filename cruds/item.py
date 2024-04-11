@@ -41,6 +41,22 @@ def find_by_id(db: Session, item_id: int, user_id: int) -> Item:
     )
 
 
+def find_by_id_nonfil(db: Session, item_id: int) -> Item:
+    """
+    指定したIDのアイテムを取得します。
+
+    Args:
+        db (Session): データベースセッション
+        item_id (int): アイテムID
+
+    Returns:
+        Item: 指定したIDのアイテム
+    """
+
+    # NOTE: 複数の候補が存在する場合は最初の候補を返す
+    return db.query(Item).filter(Item.id == item_id).first()
+
+
 def find_by_name(db: Session, name: str) -> List[Item]:
     """
     指定した名前のアイテムを部分一致で取得します。
@@ -73,6 +89,28 @@ def create(db: Session, create_item: ItemCreate, user_id: int) -> Item:
     db.commit()
 
     return new_item
+
+
+def message_multiple(db: Session, req_ids: List[int]) -> List[dict]:
+    """
+    複数アイテムを疎通します。
+
+    Args:
+        db (Session): データベースセッション
+        message_item (ItemMessageCreate): 疎通するアイテムのデータ
+
+    Returns:
+        Item: 疎通したアイテム
+    """
+
+    res_ids = []
+    for id in req_ids:
+        item = find_by_id_nonfil(db, id)
+        if not item:
+            return None
+        res_ids.append({"res": "ok", "id": item.id, "name": item.name})
+
+    return res_ids
 
 
 def update(db: Session, id: int, update_item: ItemUpdate, user_id: int) -> Item:

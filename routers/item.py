@@ -1,13 +1,20 @@
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request
 from sqlalchemy.orm import Session
 from starlette import status
 
 from cruds import auth as auth_cruds
 from cruds import item as item_cruds
 from database import get_db
-from schemas import DecodedToken, ItemCreate, ItemResponse, ItemUpdate
+from schemas import (
+    DecodedToken,
+    ItemCreate,
+    ItemMessage,
+    ItemMessageResponse,
+    ItemResponse,
+    ItemUpdate,
+)
 
 DbDependency = Annotated[Session, Depends(get_db)]
 
@@ -88,6 +95,30 @@ async def create(db: DbDependency, user: UserDependency, create_item: ItemCreate
     """
 
     return item_cruds.create(db, create_item, user.user_id)
+
+
+@router.post(
+    "/multiple",
+    response_model=List[ItemMessageResponse],
+    status_code=status.HTTP_200_OK,
+)
+async def message_multiple(ids: List[ItemMessage], db: DbDependency, request: Request):
+    """
+    複数アイテムIDを疎通します。
+
+    Args:
+        db (DbDependency): データベースセッションの依存関係
+        request (Request): FastAPIのリクエストオブジェクト
+
+    Returns:
+        ItemMessageResponse: 疎通したアイテム
+    """
+
+    req_ids = []
+    for id in ids:
+        req_ids.append(id.id)
+
+    return item_cruds.message_multiple(db, req_ids)
 
 
 @router.put("/{id}", response_model=ItemResponse, status_code=status.HTTP_200_OK)
