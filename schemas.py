@@ -16,6 +16,10 @@ class ItemCreate(BaseModel):
     description: Optional[str] = Field(None, examples=["新品です"])
 
 
+class ItemMessage(BaseModel):
+    id: int = Field(gt=0, examples=[1])
+
+
 class ItemUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=2, max_length=20, examples=["PC"])
     price: Optional[int] = Field(None, gt=0, examples=[50000])
@@ -32,6 +36,14 @@ class ItemResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     user_id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ItemMessageResponse(BaseModel):
+    res: str = Field(examples=["ok"])
+    id: int = Field(gt=0, examples=[1])
+    name: str = Field(min_length=2, max_length=20, examples=["PC"])
 
     model_config = ConfigDict(from_attributes=True)
 
