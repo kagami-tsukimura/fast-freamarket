@@ -1,6 +1,6 @@
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -23,10 +23,21 @@ async def find_all(db: DbDependency):
     return item_sub_cruds.find_all(db)
 
 
-# 例: item_subの特定のアイテムを取得する
+# 例: item_subのidから特定のアイテムを取得する
 @router.get("/{id}", response_model=ItemSubResponse, status_code=status.HTTP_200_OK)
 async def find_by_id(db: DbDependency, id: int = Path(gt=0)):
     found_item = item_sub_cruds.find_by_id(db, id)
+    if not found_item:
+        raise HTTPException(status_code=404, detail="ItemSub not found")
+    return found_item
+
+
+# 例: item_subのnameから特定のアイテムを取得する
+@router.get("/", response_model=List[ItemSubResponse], status_code=status.HTTP_200_OK)
+async def find_by_name(
+    db: DbDependency, name: str = Query(min_length=2, max_length=255)
+):
+    found_item = item_sub_cruds.find_by_name(db, name)
     if not found_item:
         raise HTTPException(status_code=404, detail="ItemSub not found")
     return found_item

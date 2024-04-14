@@ -37,6 +37,26 @@ def find_by_id(db: Session, item_sub_id: int) -> ItemSub:
     return db.query(ItemSub).filter(ItemSub.id == item_sub_id).first()
 
 
+def find_by_name(db: Session, item_sub_name: str) -> List[ItemSub]:
+    """
+    指定したnameのItemSubを取得します。
+
+    Args:
+        db (Session): データベースセッション
+        item_sub_name (str): ItemSubのname
+
+    Returns:
+        ItemSub: 指定したnameのItemSub
+    """
+
+    return (
+        db.query(ItemSub)
+        .filter(ItemSub.name.contains(item_sub_name))
+        .order_by(ItemSub.id)
+        .all()
+    )
+
+
 def create(db: Session, create_item: ItemSubCreate) -> ItemSub:
     """
     ItemSubを新規登録します。
