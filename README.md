@@ -71,7 +71,7 @@ uvicorn main:app --reload
 docker-compose exec app /bin/bash
 ```
 
-1. DBマイグレーション環境の作成
+2. DBマイグレーション環境の作成
 
 ```bash:
 alembic init migrations
@@ -95,7 +95,7 @@ target_metadata = Base.metadata
 5. マイグレーションコマンドの実行。
 
 ```bash:
- alembic revision --autogenerate -m "Create table"
+alembic revision --autogenerate -m "Create table"
 ```
 
 6. マイグレーションの適用。
