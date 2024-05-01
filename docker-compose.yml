@@ -10,7 +10,7 @@ services:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
-    restart: always
+    # restart: always
     command:
       [
         "bash",
@@ -23,7 +23,7 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: postgres
-    restart: always
+    # restart: always
     user: "$UID:$GID"
     ports:
       - 25432:5432
@@ -40,7 +40,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    restart: always
+    # restart: always
     user: "$UID:$GID"
     ports:
       - 81:80

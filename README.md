@@ -64,43 +64,44 @@ uvicorn main:app --reload
 
 コンテナ起動後、下記の手順でマイグレーションを実装する。  
 
-1. appコンテナに入る
-```bash:
-docker-compose exec app /bin/bash
-```
+1. DBマイグレーション環境の作成
 
-2. DBマイグレーション環境の作成
+  ```bash:
+  alembic init migrations
+  sudo chown -R $(whoami):$(whoami) migrations/ alembic.ini
+  ```
 
-```bash:
-alembic init migrations
-sudo chown -R $(whoami):$(whoami) migrations/ alembic.ini
-```
+2. alembic.iniの修正
 
-3. alembic.iniの修正
+  ```ini:
+  sqlalchemy.url = postgresql://postgres:postgres@postgres:5432/admin
+  ```
 
-```ini:
-sqlalchemy.url = postgresql://postgres:postgres@postgres:5432/admin
-```
+3. migrations/env.pyの修正。
 
-4. migrations/env.pyの修正。
+  ```python: env.py
+  from models import Base
 
-```python: env.py
-from models import Base
+  target_metadata = Base.metadata
+  ```
 
-target_metadata = Base.metadata
-```
+4. appコンテナに入る
+
+  ```bash:
+  docker-compose exec app /bin/bash
+  ```
 
 5. マイグレーションコマンドの実行。
 
-```bash:
- alembic revision --autogenerate -m "Create table"
-```
+  ```bash:
+  alembic revision --autogenerate -m "Create table"
+  ```
 
 6. マイグレーションの適用。
 
-```bash:
-alembic upgrade head
-```
+  ```bash:
+  alembic upgrade head
+  ```
 
 ## pgadminの接続
 
