@@ -95,7 +95,7 @@ target_metadata = Base.metadata
 5. マイグレーションコマンドの実行。
 
 ```bash:
- alembic revision --autogenerate -m "Create table"
+alembic revision --autogenerate -m "Create table"
 ```
 
 6. マイグレーションの適用。
