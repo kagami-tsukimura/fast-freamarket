@@ -71,7 +71,7 @@ uvicorn main:app --reload
 docker-compose exec app /bin/bash
 ```
 
-1. DBマイグレーション環境の作成
+2. DBマイグレーション環境の作成
 
 ```bash:
 alembic init migrations
